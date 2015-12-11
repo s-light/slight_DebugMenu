@@ -171,13 +171,13 @@ int freeRam () {
 // Menu System
 
 // Modes for Menu Switcher
-const uint8_t menu_mode__MainMenu    = 1;
-const uint8_t menu_mode__SubMenu1    = 2;
-uint8_t menu_mode = menu_mode__MainMenu;
+const uint8_t menu_mode__MenuMain    = 1;
+const uint8_t menu_mode__MenuSub1    = 2;
+uint8_t menu_mode = menu_mode__MenuMain;
 
 
 // SubMenu SetValues
-void handleMenu_Sub1(slight_DebugMenu *pInstance) {
+void menu_handle_Sub1(slight_DebugMenu *pInstance) {
     Print &out = pInstance->get_stream_out_ref();
     char *command = pInstance->get_command_current_pointer();
     // out.print("sub1 command: '");
@@ -201,7 +201,7 @@ void handleMenu_Sub1(slight_DebugMenu *pInstance) {
         //---------------------------------------------------------------------
         case 'x': {
             out.println(F("exit Sub-Menu1."));
-            menu_mode = menu_mode__MainMenu;
+            menu_mode = menu_mode__MenuMain;
         } break;
         //---------------------------------------------------------------------
         case 'f': {
@@ -232,7 +232,7 @@ void handleMenu_Sub1(slight_DebugMenu *pInstance) {
                 pInstance->set_flag_EOL(true);
             } else {
                 // exit submenu
-                // menu_mode = menu_mode__MainMenu;
+                // menu_mode = menu_mode__MenuMain;
                 // or
                 // only show help
                 pInstance->get_command_input_pointer()[0] = '?';
@@ -243,7 +243,7 @@ void handleMenu_Sub1(slight_DebugMenu *pInstance) {
 } // end Sub Menu 1
 
 // Main Menu
-void handleMenu_Main(slight_DebugMenu *pInstance) {
+void menu_handle_Main(slight_DebugMenu *pInstance) {
     Print &out = pInstance->get_stream_out_ref();
     char *command = pInstance->get_command_current_pointer();
     // out.print("command: '");
@@ -340,7 +340,7 @@ void handleMenu_Main(slight_DebugMenu *pInstance) {
                 (command[3] == ':')
             ) {
                 // switch to submenu
-                menu_mode = menu_mode__SubMenu1;
+                menu_mode = menu_mode__MenuSub1;
                 // check if full command (with submenu command) is given:
                 if ( command[4] != '\0' ) {
                     // full length command
@@ -372,19 +372,19 @@ void handleMenu_Main(slight_DebugMenu *pInstance) {
 
 
 // Menu Switcher
-void menuSwitcher(slight_DebugMenu *pInstance) {
+void menu_switcher(slight_DebugMenu *pInstance) {
     switch (menu_mode) {
-            case menu_mode__MainMenu: {
-                handleMenu_Main(pInstance);
-            } break;
-            case menu_mode__SubMenu1: {
-                handleMenu_Sub1(pInstance);
-            } break;
-            default: {
-                // something went wronge - so reset and show MainMenu
-                menu_mode = menu_mode__MainMenu;
-            }
-        } // end switch menu_mode
+        case menu_mode__MenuMain: {
+            menu_handle_Main(pInstance);
+        } break;
+        case menu_mode__MenuSub1: {
+            menu_handle_Sub1(pInstance);
+        } break;
+        default: {
+            // something went wronge - so reset and show MainMenu
+            menu_mode = menu_mode__MenuMain;
+        }
+    } // end switch menu_mode
 }
 
 
@@ -465,7 +465,7 @@ void setup() {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // show serial commands
 
-        myDebugMenu.set_callback(menuSwitcher);
+        myDebugMenu.set_callback(menu_switcher);
         myDebugMenu.begin(true);
 
 

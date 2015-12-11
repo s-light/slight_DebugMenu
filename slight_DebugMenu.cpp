@@ -301,7 +301,7 @@ void slight_DebugMenu::handle_input_available() {
                 // stream_out.println();
 
                 // check for length
-                if (strlen(command_input) < (input_length-1)) {
+                if ((uint8_t)strlen(command_input) < (input_length-1)) {
                     command_input[strlen(command_input)] = charNew;
                 } else {
                     // stream_out.println(F(
