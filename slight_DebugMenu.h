@@ -60,14 +60,14 @@ class slight_DebugMenu {
 
         // bool get_flag_SkipRest();
         bool get_flag_BF();
-        void set_flag_EOL(bool flag);
+        void set_flag_EOC(bool flag);
 
         char* get_command_input_pointer();
         char* get_command_current_pointer();
 
         Print& get_stream_out_ref();
 
-        void set_callback(callback_t callback_on_EOL_new);
+        void set_callback(callback_t callback_on_EOC_new);
 
 
         static void print_Binary_8(Print &out, uint8_t value);
@@ -91,16 +91,16 @@ class slight_DebugMenu {
         uint8_t input_length;
 
         bool flag_BF; // BufferFull
-        bool flag_EOL;
+        bool flag_EOC; // End of Command
         bool flag_CR;
         bool flag_LF;
         // bool flag_LongLine;
         // bool flag_SkipRest;
 
-        callback_t callback_on_EOL;
+        callback_t callback_on_EOC;
 
         void handle_input_available();
-        void check_EOL();
+        void check_EOC();
 
 
 };

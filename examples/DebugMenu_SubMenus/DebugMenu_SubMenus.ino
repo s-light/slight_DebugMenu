@@ -229,14 +229,14 @@ void menu_handle_Sub1(slight_DebugMenu *pInstance) {
                 out.print(command);
                 out.println(F("' not recognized. try again."));
                 pInstance->get_command_input_pointer()[0] = '?';
-                pInstance->set_flag_EOL(true);
+                pInstance->set_flag_EOC(true);
             } else {
                 // exit submenu
                 // menu_mode = menu_mode__MenuMain;
                 // or
                 // only show help
                 pInstance->get_command_input_pointer()[0] = '?';
-                pInstance->set_flag_EOL(true);
+                pInstance->set_flag_EOC(true);
             }
         }
     } //end switch
@@ -347,11 +347,11 @@ void menu_handle_Main(slight_DebugMenu *pInstance) {
                     // copy submenu command part to input buffer
                     char* input = pInstance->get_command_input_pointer();
                     strcpy(input, &command[4]);
-                    pInstance->set_flag_EOL(true);
+                    pInstance->set_flag_EOC(true);
                 } else {
                     // just change into the submenu and display help:
                     pInstance->get_command_input_pointer()[0] = '?';
-                    pInstance->set_flag_EOL(true);
+                    pInstance->set_flag_EOC(true);
                 }
             }
         } break;
@@ -363,7 +363,7 @@ void menu_handle_Main(slight_DebugMenu *pInstance) {
                 out.println(F("' not recognized. try again."));
             }
             pInstance->get_command_input_pointer()[0] = '?';
-            pInstance->set_flag_EOL(true);
+            pInstance->set_flag_EOC(true);
         }
     } //end switch
 

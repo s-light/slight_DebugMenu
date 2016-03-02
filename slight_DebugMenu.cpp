@@ -87,7 +87,7 @@ void slight_DebugMenu::begin() {
         memset(command_current, '\0', input_length);
 
         flag_BF = false;  // BufferFull
-        flag_EOL = false;
+        flag_EOC = false;
         flag_CR = false;
         flag_LF = false;
         // flag_LongLine = false;
@@ -101,7 +101,7 @@ void slight_DebugMenu::begin(bool print_on_start) {
     if (print_on_start) {
         begin();
         command_input[0] = '?';
-        flag_EOL = true;
+        flag_EOC = true;
         update();
     }
 }
@@ -109,13 +109,13 @@ void slight_DebugMenu::begin(bool print_on_start) {
 void slight_DebugMenu::update() {
     if (ready) {
         handle_input_available();
-        check_EOL();
+        check_EOC();
     }
 }
 
 
-void slight_DebugMenu::set_callback(callback_t callback_on_EOL_new) {
-    callback_on_EOL = callback_on_EOL_new;
+void slight_DebugMenu::set_callback(callback_t callback_on_EOC_new) {
+    callback_on_EOC = callback_on_EOC_new;
 }
 
 
@@ -123,8 +123,8 @@ bool slight_DebugMenu::get_flag_BF() {
     return flag_BF;
 }
 
-void slight_DebugMenu::set_flag_EOL(bool flag = true) {
-    flag_EOL = flag;
+void slight_DebugMenu::set_flag_EOC(bool flag = true) {
+    flag_EOC = flag;
 }
 
 Print& slight_DebugMenu::get_stream_out_ref() {
@@ -220,7 +220,7 @@ void slight_DebugMenu::print_uint8_array(
 
 void slight_DebugMenu::handle_input_available() {
     // collect next input text
-    while ((!flag_EOL) && (stream_input.available())) {
+    while ((!flag_EOC) && (stream_input.available())) {
         // get the new byte:
         char charNew = (char)stream_input.read();
         /*stream_out.print(F("charNew '"));
@@ -240,13 +240,13 @@ void slight_DebugMenu::handle_input_available() {
         switch (charNew) {
             // case '\0': {
             //     stream_out.println(F("incoming char is \\0: set EOL"));
-            //     flag_EOL = true;
+            //     flag_EOC = true;
             //     // flag_CR = false;
             //     // flag_LF = false;
             // } break;
             case '\r': {
                 // stream_out.println(F("incoming char is \\r (CR): set EOL"));
-                flag_EOL = true;
+                flag_EOC = true;
                 flag_CR = true;
                 // flag_LF = false;
             } break;
@@ -259,17 +259,17 @@ void slight_DebugMenu::handle_input_available() {
                 //     stream_out.println(flag_CR);
                 //     stream_out.print  (F("    flag_LF: '"));
                 //     stream_out.println(flag_LF);
-                //     stream_out.print  (F("    flag_EOL: '"));
-                //     stream_out.println(flag_EOL);
+                //     stream_out.print  (F("    flag_EOC: '"));
+                //     stream_out.println(flag_EOC);
 
                 flag_LF = true;
-                flag_EOL = true;
+                flag_EOC = true;
 
                 // stream_out.println(F("  check for CR"));
                 // check if last char was not CR -
                 // if this is true set EOL - else ignore.
                 // if(!flag_CR) {
-                //     flag_EOL = true;
+                //     flag_EOC = true;
                 // } else {
                 //     flag_CR = false;
                 // }
@@ -281,12 +281,12 @@ void slight_DebugMenu::handle_input_available() {
                 //     stream_out.println(flag_CR);
                 //     stream_out.print  (F("    flag_LF: '"));
                 //     stream_out.println(flag_LF);
-                //     stream_out.print  (F("    flag_EOL: '"));
-                //     stream_out.println(flag_EOL);
+                //     stream_out.print  (F("    flag_EOC: '"));
+                //     stream_out.println(flag_EOC);
 
                 // this check also works for windows double line ending
                 // if (strlen(command_input) > 0) {
-                //     flag_EOL = true;
+                //     flag_EOC = true;
                 // }
             } break;
             default: {
@@ -311,7 +311,7 @@ void slight_DebugMenu::handle_input_available() {
                     // stream_out.println(F(
                     //     "Buffer is full: set EOL; set LongLine"
                     // ));
-                    // flag_EOL = true;
+                    // flag_EOC = true;
                     flag_BF = true;
                     // skip rest of line
                     // flag_LongLine = true;
@@ -321,10 +321,10 @@ void slight_DebugMenu::handle_input_available() {
     }  // while input.available()
 }
 
-void slight_DebugMenu::check_EOL() {
+void slight_DebugMenu::check_EOC() {
     // complete line found:
-    if (flag_EOL) {
-        // Serial.println(F("check_EOL:"));
+    if (flag_EOC) {
+        // Serial.println(F("check_EOC:"));
         // Serial.print(F("    command_input: '"));
         // Serial.print(command_input);
         // Serial.println(F("'"));
@@ -336,8 +336,8 @@ void slight_DebugMenu::check_EOL() {
         // Serial.println(flag_CR);
         // Serial.print  (F("    flag_LF: '"));
         // Serial.println(flag_LF);
-        // Serial.print  (F("    flag_EOL: '"));
-        // Serial.println(flag_EOL);
+        // Serial.print  (F("    flag_EOC: '"));
+        // Serial.println(flag_EOC);
 
 
         // Serial.println(F("  copy command_input to command_current."));
@@ -348,15 +348,15 @@ void slight_DebugMenu::check_EOL() {
         // reset memory
         memset(command_input, '\0', input_length-1);
 
-        // Serial.println(F("  clear flag_EOL"));
+        // Serial.println(F("  clear flag_EOC"));
         // reset flag
-        flag_EOL = false;
+        flag_EOC = false;
         flag_LF = false;
         flag_CR = false;
 
         // parse line / run command
-        if (callback_on_EOL) {
-            callback_on_EOL(this);
+        if (callback_on_EOC) {
+            callback_on_EOC(this);
         }
 
         // reset BufferFull
