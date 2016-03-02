@@ -317,6 +317,7 @@ void setup() {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // show serial commands
 
+        myDebugMenu.set_user_EOC_char(';');
         myDebugMenu.set_callback(handleMenu_Main);
         myDebugMenu.begin(true);
 

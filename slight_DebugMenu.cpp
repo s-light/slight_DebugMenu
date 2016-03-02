@@ -69,6 +69,7 @@ slight_DebugMenu :: slight_DebugMenu(
     // in = in_ref;
     // stream_out = out_ref;
     input_length = input_length_new;
+    user_EOC_char_active = false;
     command_input = (char *)malloc(input_length);
     command_current = (char *)malloc(input_length);
 }
@@ -118,6 +119,19 @@ void slight_DebugMenu::set_callback(callback_t callback_on_EOC_new) {
     callback_on_EOC = callback_on_EOC_new;
 }
 
+
+void slight_DebugMenu::set_user_EOC_char(char user_EOC_char_new) {
+    user_EOC_char = user_EOC_char_new;
+    user_EOC_char_active = true;
+}
+
+char slight_DebugMenu::get_user_EOC_char() {
+    return user_EOC_char;
+}
+
+void slight_DebugMenu::clear_user_EOC_char() {
+    user_EOC_char_active = false;
+}
 
 bool slight_DebugMenu::get_flag_BF() {
     return flag_BF;
@@ -290,31 +304,41 @@ void slight_DebugMenu::handle_input_available() {
                 // }
             } break;
             default: {
-                // normal char -
-                // add it to the input:
-                // stream_out.print(F("input char '"));
-                // stream_out.print(charNew);
-                // stream_out.println(F("'"));
+                // new! check for user EOC charNew
+                if (user_EOC_char_active) {
+                    if (charNew == user_EOC_char) {
+                        flag_EOC = true;
+                        flag_USER = true;
+                    }
+                }
 
-                // stream_out.print(F("sizeof(command_input): "));
-                // stream_out.print(sizeof(command_input));
-                // stream_out.println();
+                if (!flag_EOC) {
+                    // normal char -
+                    // add it to the input:
+                    // stream_out.print(F("input char '"));
+                    // stream_out.print(charNew);
+                    // stream_out.println(F("'"));
 
-                // check for length
-                if ((uint8_t)strlen(command_input) < (input_length-1)) {
-                    command_input[strlen(command_input)] = charNew;
-                } else {
-                    // stream_out.println(F(
-                    //     " line to long! ignoring rest of line"
-                    // ));
-                    // set complete flag so line will be parsed
-                    // stream_out.println(F(
-                    //     "Buffer is full: set EOL; set LongLine"
-                    // ));
-                    // flag_EOC = true;
-                    flag_BF = true;
-                    // skip rest of line
-                    // flag_LongLine = true;
+                    // stream_out.print(F("sizeof(command_input): "));
+                    // stream_out.print(sizeof(command_input));
+                    // stream_out.println();
+
+                    // check for length
+                    if ((uint8_t)strlen(command_input) < (input_length-1)) {
+                        command_input[strlen(command_input)] = charNew;
+                    } else {
+                        // stream_out.println(F(
+                        //     " line to long! ignoring rest of line"
+                        // ));
+                        // set complete flag so line will be parsed
+                        // stream_out.println(F(
+                        //     "Buffer is full: set EOL; set LongLine"
+                        // ));
+                        // flag_EOC = true;
+                        flag_BF = true;
+                        // skip rest of line
+                        // flag_LongLine = true;
+                    }
                 }
             }  // case default
         }  // switch charNew

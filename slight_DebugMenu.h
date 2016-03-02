@@ -62,6 +62,10 @@ class slight_DebugMenu {
         bool get_flag_BF();
         void set_flag_EOC(bool flag);
 
+        void set_user_EOC_char(char user_EOC_char_new);
+        char get_user_EOC_char();
+        void clear_user_EOC_char();
+
         char* get_command_input_pointer();
         char* get_command_current_pointer();
 
@@ -88,12 +92,16 @@ class slight_DebugMenu {
         char *command_input;
         char *command_current;
 
+        bool user_EOC_char_active;
+        char user_EOC_char;
+
         uint8_t input_length;
 
         bool flag_BF; // BufferFull
         bool flag_EOC; // End of Command
         bool flag_CR;
         bool flag_LF;
+        bool flag_USER;
         // bool flag_LongLine;
         // bool flag_SkipRest;
 
