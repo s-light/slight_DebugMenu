@@ -159,7 +159,8 @@ char* slight_DebugMenu::get_command_current_pointer() {
 // public static
 
 void slight_DebugMenu::print_Binary_8(Print &stream_out, uint8_t value)  {
-    for (size_t mask = 0b10000000; mask; mask >>= 1) {
+    // for (size_t mask = 0b10000000; mask; mask >>= 1) {
+    for (uint8_t mask = ((uint8_t)1 << 7    ); mask; mask >>= 1) {
         // check if this bit is set
         if (mask & value) {
             stream_out.print('1');
@@ -172,7 +173,7 @@ void slight_DebugMenu::print_Binary_8(Print &stream_out, uint8_t value)  {
 void slight_DebugMenu::print_Binary_12(Print &stream_out, uint16_t value)  {
     //                       B12345678   B12345678
     // for (unsigned int mask = 0x8000; mask; mask >>= 1) {
-    for (size_t mask = 0b100000000000; mask; mask >>= 1) {
+    for (uint16_t mask = ((uint16_t)1 << 11); mask; mask >>= 1) {
         // check if this bit is set
         if (mask & value) {
             stream_out.print('1');
@@ -183,7 +184,7 @@ void slight_DebugMenu::print_Binary_12(Print &stream_out, uint16_t value)  {
 }
 
 void slight_DebugMenu::print_Binary_16(Print &stream_out, uint16_t value)  {
-    for (size_t mask = 0b1000000000000000; mask; mask >>= 1) {
+    for (uint16_t mask = ((uint16_t)1 << 15); mask; mask >>= 1) {
         // check if this bit is set
         if (mask & value) {
             stream_out.print('1');
@@ -192,6 +193,19 @@ void slight_DebugMenu::print_Binary_16(Print &stream_out, uint16_t value)  {
         }
     }
 }
+
+void slight_DebugMenu::print_Binary_32(Print &stream_out, uint32_t value)  {
+    for (uint32_t mask = ((uint32_t)1 << 31); mask; mask >>= 1) {
+        // check if this bit is set
+        if (mask & value) {
+            stream_out.print('1');
+        } else {
+            stream_out.print('0');
+        }
+    }
+}
+
+
 
 void slight_DebugMenu::print_uint8_align_right(
     Print &stream_out,
@@ -210,6 +224,122 @@ void slight_DebugMenu::print_uint8_align_right(
     stream_out.print(value);
 }
 
+
+void slight_DebugMenu::print_uint16_align_right(
+    Print &stream_out,
+    uint16_t value
+) {
+    // 0 .. 65,535
+
+    // tests
+    // out.println(F("test print_uint16_align_right: "));
+    // uint16_t ui16[] = {
+    //     0,
+    //     100,
+    //     999,
+    //     1000,
+    //     1001,
+    //     10321,
+    //     65535
+    // };
+    //
+    // for (size_t i = 0; i < (sizeof(ui16)/sizeof(uint16_t)); i++) {
+    //     slight_DebugMenu::print_uint32_align_right(
+    //         out,
+    //         ui16[i]
+    //     );
+    //     out.print(F(" ("));
+    //     out.print(ui16[i]);
+    //     out.print(F(")"));
+    //     out.println();
+    // }
+
+    // uint8_t offset = 0;
+    // if (value < 10000) {
+    //     offset += 1;
+    //     if (value < 1000) {
+    //         offset += 1;
+    //         if (value < 100) {
+    //             offset += 1;
+    //             if (value < 10) {
+    //                 offset += 1;
+    //             }
+    //         }
+    //     }
+    // }
+
+    uint8_t padding_width = 5;
+    uint8_t offset = padding_width-1;
+    uint16_t compare = 10;
+    while (
+        (value >= compare) and
+        (offset > 0)
+    ) {
+        offset -= 1;
+        compare *= 10;
+    }
+
+
+
+    for (size_t i = 0; i < offset; i++) {
+        stream_out.print(F(" "));
+    }
+    stream_out.print(value);
+}
+
+
+void slight_DebugMenu::print_uint32_align_right(
+    Print &stream_out,
+    uint32_t value
+) {
+    // 0 .. 4,294,967,295
+
+    // tests:
+    // out.println(F("test print_uint32_align_right: "));
+    // uint32_t ui32[] = {
+    //     0,
+    //     100,
+    //     999,
+    //     10321,
+    //     90321,
+    //     1000321,
+    //     9000321,
+    //     100300321,
+    //     900300321,
+    //     1300300321,
+    //     4294967295,
+    // };
+    //
+    // for (size_t i = 0; i < (sizeof(ui32)/sizeof(uint32_t)); i++) {
+    //     slight_DebugMenu::print_uint32_align_right(
+    //         out,
+    //         ui32[i]
+    //     );
+    //     out.print(F(" ("));
+    //     out.print(ui32[i]);
+    //     out.print(F(")"));
+    //     out.println();
+    // }
+
+    uint8_t padding_width = 10;
+    uint8_t offset = padding_width-1;
+    uint32_t compare = 10;
+    while (
+        (value >= compare) and
+        (offset > 0)
+    ) {
+        offset -= 1;
+        compare *= 10;
+    }
+
+    for (size_t i = 0; i < offset; i++) {
+        stream_out.print(F(" "));
+    }
+    stream_out.print(value);
+}
+
+
+
 void slight_DebugMenu::print_uint8_array(
     Print &stream_out,
     uint8_t *array,
@@ -221,6 +351,34 @@ void slight_DebugMenu::print_uint8_array(
     for (index = 1; index < count; index++) {
         stream_out.print(F(", "));
         print_uint8_align_right(stream_out, array[index]);
+    }
+}
+
+void slight_DebugMenu::print_uint8_array(
+    Print &stream_out,
+    char *array,
+    size_t count
+) {
+    stream_out.print(F(" "));
+    uint8_t index = 0;
+    print_uint8_align_right(stream_out, array[index]);
+    for (index = 1; index < count; index++) {
+        stream_out.print(F(", "));
+        print_uint8_align_right(stream_out, array[index]);
+    }
+}
+
+void slight_DebugMenu::print_uint16_array(
+    Print &stream_out,
+    uint16_t *array,
+    size_t count
+) {
+    stream_out.print(F(" "));
+    uint8_t index = 0;
+    print_uint16_align_right(stream_out, array[index]);
+    for (index = 1; index < count; index++) {
+        stream_out.print(F(", "));
+        print_uint16_align_right(stream_out, array[index]);
     }
 }
 
