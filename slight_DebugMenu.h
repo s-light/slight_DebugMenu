@@ -87,6 +87,9 @@ class slight_DebugMenu {
         static void print_uint16_align_right(Print &out, uint16_t value);
         static void print_uint32_align_right(Print &out, uint32_t value);
 
+        static void print_int16_align_right(Print &out, int16_t value);
+        static void print_int32_align_right(Print &out, int32_t value);
+
 
         static void print_uint8_array(Print &out, uint8_t *array, size_t count);
         static void print_uint8_array(Print &out, char *array, size_t count);

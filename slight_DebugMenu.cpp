@@ -339,6 +339,150 @@ void slight_DebugMenu::print_uint32_align_right(
 }
 
 
+void slight_DebugMenu::print_int32_align_right(
+    Print &stream_out,
+    int32_t value
+) {
+    // -2,147,483,648 .. 2,147,483,647
+
+    // tests:
+    // out.println(F("test print_int32_align_right: "));
+    // int32_t i32[] = {
+    //     0,
+    //     1,
+    //     9,
+    //     10,
+    //     99,
+    //     100,
+    //     999,
+    //     1000,
+    //     9999,
+    //     10000,
+    //     99999,
+    //     100000,
+    //     999999,
+    //     1000000,
+    //     9999999,
+    //     10000000,
+    //     19999999,
+    //     100000000,
+    //     999999999,
+    //     1000000000,
+    //     2147483646,
+    //     2147483647,
+    //     1,
+    //     0,
+    //     -1,
+    //     -9,
+    //     -10,
+    //     -99,
+    //     -100,
+    //     -999,
+    //     -1000,
+    //     -9999,
+    //     -10000,
+    //     -99999,
+    //     -100000,
+    //     -999999,
+    //     -1000000,
+    //     -9999999,
+    //     -10000000,
+    //     -19999999,
+    //     -100000000,
+    //     -999999999,
+    //     -1000000000,
+    //     -2147483646,
+    //     -2147483647,
+    //     -2147483648,
+    // };
+    //
+    // for (size_t i = 0; i < (sizeof(i32)/sizeof(uint32_t)); i++) {
+    //     slight_DebugMenu::print_int32_align_right(
+    //         out,
+    //         i32[i]
+    //     );
+    //     out.print(F(" ("));
+    //     out.print(i32[i]);
+    //     out.print(F(")"));
+    //     out.println();
+    // }
+
+    // one more for sign.
+    uint8_t padding_width = 10;
+    uint8_t offset = padding_width;
+    uint32_t compare = 1;
+
+    uint32_t value_abs = abs(value);
+
+    // we have a minimum of one digit:
+    offset -= 1;
+    compare *= 10;
+
+    while (
+        (compare <= value_abs) and
+        (offset > 0)
+    ) {
+        offset -= 1;
+        if (offset > 0) {
+            compare *= 10;
+        }
+    }
+
+    // handle '-' sign
+    if (value >= 0) {
+        offset += 1;
+    }
+
+    for (size_t i = 0; i < offset; i++) {
+        stream_out.print(F(" "));
+    }
+    stream_out.print(value);
+
+    // stream_out.print("    (compare:");
+    // stream_out.print(compare);
+    // stream_out.print(" offset:");
+    // stream_out.print(offset);
+    // stream_out.print(") ");
+}
+
+void slight_DebugMenu::print_int16_align_right(
+    Print &stream_out,
+    int16_t value
+) {
+    // -32,768 .. 32,767
+
+    uint8_t padding_width = 5;
+    uint8_t offset = padding_width;
+    uint16_t compare = 1;
+
+    uint16_t value_abs = abs(value);
+
+    // we have a minimum of one digit:
+    offset -= 1;
+    compare *= 10;
+
+    while (
+        (compare <= value_abs) and
+        (offset > 0)
+    ) {
+        offset -= 1;
+        if (offset > 0) {
+            compare *= 10;
+        }
+    }
+
+    // handle '-' sign
+    if (value >= 0) {
+        offset += 1;
+    }
+
+    for (size_t i = 0; i < offset; i++) {
+        stream_out.print(F(" "));
+    }
+    stream_out.print(value);
+}
+
+
 
 void slight_DebugMenu::print_uint8_array(
     Print &stream_out,
