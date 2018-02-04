@@ -74,26 +74,40 @@ class slight_DebugMenu {
         void set_callback(callback_t callback_on_EOC_new);
 
 
+
+
         static void print_Binary_8(Print &out, uint8_t value);
         static void print_Binary_12(Print &out, uint16_t value);
         static void print_Binary_16(Print &out, uint16_t value);
         static void print_Binary_32(Print &out, uint32_t value);
 
+        static void print_HEX(Print &out, uint8_t value);
+
+        static uint8_t parse_HEX(char *input);
 
         // TODO: find smooth way to extract align right thing..
         // static void print_align_right(Print &out, uint8_t value, uint8_t padding_width);
+        // --> use templates!!!!
 
         static void print_uint8_align_right(Print &out, uint8_t value);
         static void print_uint16_align_right(Print &out, uint16_t value);
         static void print_uint32_align_right(Print &out, uint32_t value);
 
+        static void print_int8_align_right(Print &out, int16_t value);
         static void print_int16_align_right(Print &out, int16_t value);
         static void print_int32_align_right(Print &out, int32_t value);
 
 
         static void print_uint8_array(Print &out, uint8_t *array, size_t count);
+        static void print_int8_array(Print &out, int8_t *array, size_t count);
         static void print_uint8_array(Print &out, char *array, size_t count);
+        static void print_uint8_array_HEX(Print &out, uint8_t *array, size_t count);
         static void print_uint16_array(Print &out, uint16_t *array, size_t count);
+        static void print_int16_array(Print &out, int16_t *array, size_t count);
+
+
+        static void print_MAC(Print &stream_out, uint8_t *array);
+        static void print_IP(Print &stream_out, uint8_t *array);
 
 
     protected:

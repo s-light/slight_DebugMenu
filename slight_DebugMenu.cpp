@@ -205,6 +205,93 @@ void slight_DebugMenu::print_Binary_32(Print &stream_out, uint32_t value)  {
     }
 }
 
+void slight_DebugMenu::print_HEX(Print &stream_out, uint8_t value) {
+    if (value < 0x10) {
+        stream_out.print("0");
+    }
+    stream_out.print(value, HEX);
+}
+
+
+
+// uint8_t slight_DebugMenu::parse_HEX(char *input, uint8_t count){
+uint8_t slight_DebugMenu::parse_HEX(char *input) {
+	uint8_t count = 2;
+	uint8_t value = 0;
+	uint8_t temp = 0;
+	uint8_t index = 0;
+
+	for (index = 0; index < count; index++)  {
+		if        ( (input[index] >= '0') && (input[index] <= '9') ) {
+			temp = input[index] - '0';
+		} else if ( (input[index] >= 'a') && (input[index] <= 'f') ) {
+			temp = (input[index] - 'a' + 10);
+		} else if ( (input[index] >= 'A') && (input[index] <= 'F') ) {
+			temp = (input[index] - 'A' + 10) ;
+		} else {
+			// no HEX value..
+			temp = 0;
+		}
+		value = value + ((16 - ((index%2) * 15)) * temp);
+	}
+
+	// // debug variant
+	// index = 0;
+	// Serial.print(F("input["));
+	// Serial.print(index);
+	// Serial.print(F("]: '"));
+	// Serial.print(input[index]);
+	// Serial.println(F("'"));
+	// if        ( (input[index] >= '0') && (input[index] <= '9') ) {
+	// 	temp = input[index] - '0';
+	// } else if ( (input[index] >= 'a') && (input[index] <= 'f') ) {
+	// 	temp = (input[index] - 'a' + 10);
+	// } else if ( (input[index] >= 'A') && (input[index] <= 'F') ) {
+	// 	temp = (input[index] - 'A' + 10) ;
+	// } else {
+	// 	// no HEX value..
+	// 	temp = 0;
+	// }
+	// Serial.print(F("temp: "));
+	// Serial.println(temp);
+	//
+	// value = value + ((16 - ((index%2) * 15)) * temp);
+	// //value = value + (16 * temp);
+	// Serial.print(F("16 - ((index%2) * 15): "));
+	// Serial.println(16 - ((index%2) * 15));
+	//
+	// Serial.print(F("value: "));
+	// Serial.println(value);
+	// index = 1;
+	// Serial.print(F("input["));
+	// Serial.print(index);
+	// Serial.print(F("]: '"));
+	// Serial.print(input[index]);
+	// Serial.println(F("'"));
+	// if        ( (input[index] >= '0') && (input[index] <= '9') ) {
+	// 	temp = input[index] - '0';
+	// } else if ( (input[index] >= 'a') && (input[index] <= 'f') ) {
+	// 	temp = (input[index] - 'a' + 10);
+	// } else if ( (input[index] >= 'A') && (input[index] <= 'F') ) {
+	// 	temp = (input[index] - 'A' + 10) ;
+	// } else {
+	// 	// no HEX value..
+	// 	temp = 0;
+	// }
+	// Serial.print(F("temp: "));
+	// Serial.println(temp);
+	//
+	// value = value + ((16 - ((index%2) * 15)) * temp);
+	//
+	// Serial.print(F("16 - ((index%2) * 15): "));
+	// Serial.println(16 - ((index%2) * 15));
+	//
+	// Serial.print(F("value: "));
+	// Serial.println(value);
+
+	return value;
+}
+
 
 
 void slight_DebugMenu::print_uint8_align_right(
@@ -482,7 +569,58 @@ void slight_DebugMenu::print_int16_align_right(
     stream_out.print(value);
 }
 
+void slight_DebugMenu::print_int8_align_right(
+    Print &stream_out,
+    int16_t value
+) {
+    // -128 .. 127
 
+    uint8_t padding_width = 3;
+    uint8_t offset = padding_width;
+    uint8_t compare = 1;
+
+    uint8_t value_abs = abs(value);
+
+    // we have a minimum of one digit:
+    offset -= 1;
+    compare *= 10;
+
+    while (
+        (compare <= value_abs) &&
+        (offset > 0)
+    ) {
+        offset -= 1;
+        if (offset > 0) {
+            compare *= 10;
+        }
+    }
+
+    // handle '-' sign
+    if (value >= 0) {
+        offset += 1;
+    }
+
+    for (size_t i = 0; i < offset; i++) {
+        stream_out.print(F(" "));
+    }
+    stream_out.print(value);
+}
+
+
+
+void slight_DebugMenu::print_int8_array(
+    Print &stream_out,
+    int8_t *array,
+    size_t count
+) {
+    stream_out.print(F(" "));
+    size_t index = 0;
+    print_int8_align_right(stream_out, array[index]);
+    for (index = 1; index < count; index++) {
+        stream_out.print(F(", "));
+        print_int8_align_right(stream_out, array[index]);
+    }
+}
 
 void slight_DebugMenu::print_uint8_array(
     Print &stream_out,
@@ -512,6 +650,20 @@ void slight_DebugMenu::print_uint8_array(
     }
 }
 
+void slight_DebugMenu::print_uint8_array_HEX(
+    Print &stream_out,
+    uint8_t *array,
+    size_t count
+) {
+    stream_out.print(F(" "));
+    uint8_t index = 0;
+    print_HEX(stream_out, array[index]);
+    for (index = 1; index < count; index++) {
+        stream_out.print(F(", "));
+        print_HEX(stream_out, array[index]);
+    }
+}
+
 void slight_DebugMenu::print_uint16_array(
     Print &stream_out,
     uint16_t *array,
@@ -526,6 +678,38 @@ void slight_DebugMenu::print_uint16_array(
     }
 }
 
+void slight_DebugMenu::print_int16_array(
+    Print &stream_out,
+    int16_t *array,
+    size_t count
+) {
+    stream_out.print(F(" "));
+    uint8_t index = 0;
+    print_int16_align_right(stream_out, array[index]);
+    for (index = 1; index < count; index++) {
+        stream_out.print(F(", "));
+        print_int16_align_right(stream_out, array[index]);
+    }
+}
+
+
+void slight_DebugMenu::print_MAC(Print &stream_out, uint8_t *array) {
+	size_t index = 0;
+	print_HEX(stream_out, array[index]);
+	for(index = 1; index < 6; index++){
+		stream_out.print(F(":"));
+		print_HEX(stream_out, array[index]);
+	}
+}
+
+void slight_DebugMenu::print_IP(Print &stream_out, uint8_t *array) {
+	size_t index = 0;
+	print_uint8_align_right(stream_out, array[index]);
+	for(index = 1; index < 4; index++){
+		stream_out.print(F("."));
+		print_uint8_align_right(stream_out, array[index]);
+	}
+}
 
 
 
@@ -539,10 +723,10 @@ void slight_DebugMenu::handle_input_available() {
     while ((!flag_EOC) && (stream_input.available())) {
         // get the new byte:
         char charNew = (char)stream_input.read();
-        /*stream_out.print(F("charNew '"));
-        stream_out.print(charNew);
-        stream_out.print(F("' : "));
-        stream_out.println(charNew, DEC);*/
+        // stream_out.print(F("charNew '"));
+        // stream_out.print(charNew);
+        // stream_out.print(F("' : "));
+        // stream_out.println(charNew, DEC);
 
         // collect next full line
         // http://forums.codeguru.com/showthread.php?253826-C-String-What-is-the-difference-between-n-and-r-n
