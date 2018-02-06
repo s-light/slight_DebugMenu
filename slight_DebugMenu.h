@@ -29,89 +29,84 @@
 *************************************************************************/
 
 // include guard
-#ifndef slight_DebugMenu_h
-#define slight_DebugMenu_h
+#ifndef SLIGHT_DEBUGMENU_H_
+#define SLIGHT_DEBUGMENU_H_
 
 // Includes Core Arduino functionality
-#if ARDUINO < 100
-    #include <WProgram.h>
-#else
-    #include <Arduino.h>
-#endif
+#include <Arduino.h>
 
 class slight_DebugMenu {
-    public:
-        // slight_DebugMenu();
-        // slight_DebugMenu(Stream &outin_ref, uint8_t input_length_new);
-        slight_DebugMenu(
-            Stream &stream_input_ref,
-            Print &stream_out_ref,
-            uint8_t input_length_new
-        );
+ public:
+    // slight_DebugMenu();
+    // slight_DebugMenu(Stream &outin_ref, uint8_t input_length_new);
+    slight_DebugMenu(
+        Stream &stream_input_ref,
+        Print &stream_out_ref,
+        uint8_t input_length_new
+    );
 
-        // callback
-        typedef void (* callback_t) (slight_DebugMenu  *pInstance);
-
-
-        void begin();
-        void begin(bool print_on_start);
-
-        void update();
-
-        // bool get_flag_SkipRest();
-        bool get_flag_BF();
-        void set_flag_EOC(bool flag);
-
-        void set_user_EOC_char(char user_EOC_char_new);
-        char get_user_EOC_char();
-        void clear_user_EOC_char();
-
-        char* get_command_input_pointer();
-        char* get_command_current_pointer();
-
-        Print& get_stream_out_ref();
-
-        void set_callback(callback_t callback_on_EOC_new);
+    // callback
+    typedef void (* callback_t) (slight_DebugMenu  *pInstance);
 
 
+    void begin();
+    void begin(bool print_on_start);
+
+    void update();
+
+    // bool get_flag_SkipRest();
+    bool get_flag_BF();
+    void set_flag_EOC(bool flag);
+
+    void set_user_EOC_char(char user_EOC_char_new);
+    char get_user_EOC_char();
+    void clear_user_EOC_char();
+
+    char* get_command_input_pointer();
+    char* get_command_current_pointer();
+
+    Print& get_stream_out_ref();
+
+    void set_callback(callback_t callback_on_EOC_new);
 
 
-        static void print_Binary_8(Print &out, uint8_t value);
-        static void print_Binary_12(Print &out, uint16_t value);
-        static void print_Binary_16(Print &out, uint16_t value);
-        static void print_Binary_32(Print &out, uint32_t value);
-
-        static void print_HEX(Print &out, uint8_t value);
-
-        static uint8_t parse_HEX(char *input);
-
-        // TODO: find smooth way to extract align right thing..
-        // static void print_align_right(Print &out, uint8_t value, uint8_t padding_width);
-        // --> use templates!!!!
-
-        static void print_uint8_align_right(Print &out, uint8_t value);
-        static void print_uint16_align_right(Print &out, uint16_t value);
-        static void print_uint32_align_right(Print &out, uint32_t value);
-
-        static void print_int8_align_right(Print &out, int16_t value);
-        static void print_int16_align_right(Print &out, int16_t value);
-        static void print_int32_align_right(Print &out, int32_t value);
 
 
-        static void print_uint8_array(Print &out, uint8_t *array, size_t count);
-        static void print_int8_array(Print &out, int8_t *array, size_t count);
-        static void print_uint8_array(Print &out, char *array, size_t count);
-        static void print_uint8_array_HEX(Print &out, uint8_t *array, size_t count);
-        static void print_uint16_array(Print &out, uint16_t *array, size_t count);
-        static void print_int16_array(Print &out, int16_t *array, size_t count);
+    static void print_Binary_8(Print &out, uint8_t value);
+    static void print_Binary_12(Print &out, uint16_t value);
+    static void print_Binary_16(Print &out, uint16_t value);
+    static void print_Binary_32(Print &out, uint32_t value);
+
+    static void print_HEX(Print &out, uint8_t value);
+
+    static uint8_t parse_HEX(char *input);
+
+    // TODO: find smooth way to extract align right thing..
+    // static void print_align_right(Print &out, uint8_t value, uint8_t padding_width);
+    // --> use templates!!!!
+
+    static void print_uint8_align_right(Print &out, uint8_t value);
+    static void print_uint16_align_right(Print &out, uint16_t value);
+    static void print_uint32_align_right(Print &out, uint32_t value);
+
+    static void print_int8_align_right(Print &out, int16_t value);
+    static void print_int16_align_right(Print &out, int16_t value);
+    static void print_int32_align_right(Print &out, int32_t value);
 
 
-        static void print_MAC(Print &stream_out, uint8_t *array);
-        static void print_IP(Print &stream_out, uint8_t *array);
+    static void print_uint8_array(Print &out, uint8_t *array, size_t count);
+    static void print_int8_array(Print &out, int8_t *array, size_t count);
+    static void print_uint8_array(Print &out, char *array, size_t count);
+    static void print_uint8_array_HEX(Print &out, uint8_t *array, size_t count);
+    static void print_uint16_array(Print &out, uint16_t *array, size_t count);
+    static void print_int16_array(Print &out, int16_t *array, size_t count);
 
 
-    protected:
+    static void print_MAC(Print &stream_out, uint8_t *array);
+    static void print_IP(Print &stream_out, uint8_t *array);
 
+
+ protected:
         bool ready;
 
         Stream &stream_input;
@@ -125,8 +120,8 @@ class slight_DebugMenu {
 
         uint8_t input_length;
 
-        bool flag_BF; // BufferFull
-        bool flag_EOC; // End of Command
+        bool flag_BF;  // BufferFull
+        bool flag_EOC;  // End of Command
         bool flag_CR;
         bool flag_LF;
         bool flag_USER;
@@ -137,15 +132,12 @@ class slight_DebugMenu {
 
         void handle_input_available();
         void check_EOC();
-
-
 };
 
 class DummyWriter : public Print{
-    public:
-        DummyWriter();
-
-        size_t write(uint8_t data);
+ public:
+    DummyWriter();
+    size_t write(uint8_t data);
 };
 
-#endif // end include guard
+#endif  // SLIGHT_DEBUGMENU_H_

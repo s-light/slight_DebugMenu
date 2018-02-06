@@ -33,7 +33,7 @@
 
 
 // Include yourselfs header file
-#include "slight_DebugMenu.h"
+#include "./slight_DebugMenu.h"
 
 // Includes Core Arduino functionality
 #if ARDUINO < 100
