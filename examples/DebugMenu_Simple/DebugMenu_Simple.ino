@@ -213,6 +213,116 @@ void handleMenu_Main(slight_DebugMenu *pInstance) {
             out.print((byte)(wTest>>8));
             out.println();
 
+            // char buffer[] = "--------.---\0";
+            // snprintf(
+            //     buffer, sizeof(buffer),
+            //     "%*.*f",
+            //     10,
+            //     2,
+            //     12345.789);
+            // out.print(F("sprintf: "));
+            // out.print(buffer);
+            // out.println();
+            //
+            // memset(buffer, '\0', sizeof(buffer));
+            // dtostrf(12345.789, 0, 2, buffer);
+            // out.print(F("dtostrf: '"));
+            // out.print(buffer);
+            // out.print(F("'"));
+            // out.println();
+            //
+            // memset(buffer, '\0', sizeof(buffer));
+            // dtostrf(12345.789, 1, 3, buffer);
+            // out.print(F("dtostrf: '"));
+            // out.print(buffer);
+            // out.print(F("'"));
+            // out.println();
+            //
+            // memset(buffer, '\0', sizeof(buffer));
+            // dtostrf(12.789, 8, 2, buffer);
+            // out.print(F("dtostrf: '"));
+            // out.print(buffer);
+            // out.print(F("'"));
+            // out.println();
+            //
+            // memset(buffer, '\0', sizeof(buffer));
+            // dtostrf(12.789, -8, 2, buffer);
+            // out.print(F("dtostrf: '"));
+            // out.print(buffer);
+            // out.print(F("'"));
+            // out.println();
+            //
+            // char buffer2[] = "--.--\0";
+            // memset(buffer2, '\0', sizeof(buffer2));
+            // dtostrf(123.78, 5, 2, buffer2);
+            // out.print(F("dtostrf: '"));
+            // out.print(buffer2);
+            // out.print(F("'"));
+            // out.println();
+
+            // out.print(F("FLT_MAX: '"));
+            // out.print(FLT_MAX);
+            // out.print(F("'"));
+            // out.println();
+            //
+            // out.print(F("std::numeric_limits<float>::max();: '"));
+            // out.print(std::numeric_limits<float>::max());
+            // out.print(F("'"));
+            // out.println();
+
+            // out.print(F("3.4028235E+38: '"));
+            // out.print(3.4028235E+38);
+            // out.print(F("'"));
+            // out.println();
+            // out.print(F("3.4028235E+37: '"));
+            // out.print(3.4028235E+37);
+            // out.print(F("'"));
+            // out.println();
+            // out.print(F("3.4028235E+30: '"));
+            // out.print(3.4028235E+30);
+            // out.print(F("'"));
+            // out.println();
+            // out.print(F("(int32_t)3.4028235E+38: '"));
+            // out.print((int32_t)3.4028235E+38);
+            // out.print(F("'"));
+            // out.println();
+
+            out.print(F("print_float_align_right: '"));
+            slight_DebugMenu::print_float_align_right(
+                out, 123.78, 6, 2);
+            out.print(F("'"));
+            out.println();
+
+            out.print(F("print_float_align_right: '"));
+            slight_DebugMenu::print_float_align_right(
+                out, 123.78, 8, 2);
+            out.print(F("'"));
+            out.println();
+
+            out.print(F("print_float_align_right: '"));
+            slight_DebugMenu::print_float_align_right(
+                out, 123.78, -8, 2);
+            out.print(F("'"));
+            out.println();
+
+            out.print(F("print_float_align_right: '"));
+            slight_DebugMenu::print_float_align_right(
+                out, 12.78, 3, 2);
+                out.print(F("'"));
+                out.println();
+
+            out.print(F("print_float_align_right: '"));
+            slight_DebugMenu::print_float_align_right(
+                out, 12.78, 3, 2, 1);
+            out.print(F("'"));
+            out.println();
+
+            out.print(F("print_float_align_right: '"));
+            slight_DebugMenu::print_float_align_right(
+                out, 12.78, 3, 2, -1);
+            out.print(F("'"));
+            out.println();
+
             out.println();
 
             out.println(F("__________"));
