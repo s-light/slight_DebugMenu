@@ -622,56 +622,65 @@ void slight_DebugMenu::print_int8_align_right(
 }
 
 
-int8_t slight_DebugMenu::print_float_align_right(
-    Print &stream_out,
-    double value,
-    int8_t total_width,
-    uint8_t precision,
-    int8_t clip
-) {
-    // reference / ideas:
-    // dtostrf
-    // https://www.microchip.com/webdoc/AVRLibcReferenceManual/group__avr__stdlib_1ga060c998e77fb5fc0d3168b3ce8771d42.html
-    // printf
-    // https://www.microchip.com/webdoc/AVRLibcReferenceManual/group__avr__stdio_1gaa3b98c0d17b35642c0f3e4649092b9f1.html
-    // http://www.cplusplus.com/reference/cstdio/printf/
-    // http://www.cplusplus.com/reference/cstdio/snprintf/
-    // http://www.cplusplus.com/reference/cstring/memset/
-    // http://www.cplusplus.com/reference/cstring/strlen/
-    // https://stackoverflow.com/a/27652012/574981
+#if defined(ARDUINO_ARCH_AVR)
+    // AVR-specific code
+    int8_t slight_DebugMenu::print_float_align_right(
+        Print &stream_out,
+        double value,
+        int8_t total_width,
+        uint8_t precision,
+        int8_t clip
+    ) {
+        // reference / ideas:
+        // dtostrf
+        // https://www.microchip.com/webdoc/AVRLibcReferenceManual/group__avr__stdlib_1ga060c998e77fb5fc0d3168b3ce8771d42.html
+        // printf
+        // https://www.microchip.com/webdoc/AVRLibcReferenceManual/group__avr__stdio_1gaa3b98c0d17b35642c0f3e4649092b9f1.html
+        // http://www.cplusplus.com/reference/cstdio/printf/
+        // http://www.cplusplus.com/reference/cstdio/snprintf/
+        // http://www.cplusplus.com/reference/cstring/memset/
+        // http://www.cplusplus.com/reference/cstring/strlen/
+        // https://stackoverflow.com/a/27652012/574981
 
-    // sprintf(buffer1, "%*.*f", total_width, precision, value);
-    // ^-- this does not work -
-    //     avr lib has skipped the floating point formating..
+        // sprintf(buffer1, "%*.*f", total_width, precision, value);
+        // ^-- this does not work -
+        //     avr lib has skipped the floating point formating..
 
-    // i'm not sure that this is fine.. but i think for now it works
-    const uint8_t int_width = count_digits((int32_t)value);
+        // i'm not sure that this is fine.. but i think for now it works
+        const uint8_t int_width = count_digits((int32_t)value);
 
-    const uint8_t float_widht = (int_width + 1 + precision);
-    const uint8_t buffer_size = float_widht + 1;
+        const uint8_t float_widht = (int_width + 1 + precision);
+        const uint8_t buffer_size = float_widht + 1;
 
-    char buffer1[buffer_size];
-    memset(buffer1, '\0', buffer_size);
+        char buffer1[buffer_size];
+        memset(buffer1, '\0', buffer_size);
 
-    // char *dtostrf(double val, signed char width, unsigned char prec, char *s)
-    dtostrf(value, total_width, precision, buffer1);
-    uint8_t value_length = strlen(buffer1);
-    uint8_t buffer_offset = 0;
-    if ((value_length > abs(total_width)) && (clip != 0)) {
-        if (clip > 0) {
-            // clip on start
-            buffer_offset = value_length - abs(total_width);
+        // char *dtostrf(
+        //     double val, signed char width, unsigned char prec, char *s)
+        dtostrf(value, total_width, precision, buffer1);
+        uint8_t value_length = strlen(buffer1);
+        uint8_t buffer_offset = 0;
+        if ((value_length > abs(total_width)) && (clip != 0)) {
+            if (clip > 0) {
+                // clip on start
+                buffer_offset = value_length - abs(total_width);
+            }
+            if (clip < 0) {
+                // clip on end
+                buffer1[total_width
+                ] = '\0';
+            }
         }
-        if (clip < 0) {
-            // clip on end
-            buffer1[total_width] = '\0';
-        }
+
+        uint8_t chars_written = stream_out.print(buffer1 + buffer_offset);
+
+        return chars_written;
     }
-
-    uint8_t chars_written = stream_out.print(buffer1 + buffer_offset);
-
-    return chars_written;
-}
+#elif defined(ARDUINO_ARCH_SAM)
+    // SAM-specific code
+#else
+    // generic, non-platform specific code
+#endif
 
 
 

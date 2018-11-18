@@ -109,9 +109,16 @@ class slight_DebugMenu {
     static void print_int32_align_right(
         Print &stream_out, int32_t value);
 
-    static int8_t print_float_align_right(
-        Print &stream_out, double value,
-        int8_t total_width, uint8_t precission, int8_t clip = 0);
+    #if defined(ARDUINO_ARCH_AVR)
+        // AVR-specific code
+        static int8_t print_float_align_right(
+          Print &stream_out, double value,
+          int8_t total_width, uint8_t precission, int8_t clip = 0);
+    #elif defined(ARDUINO_ARCH_SAM)
+      // SAM-specific code
+    #else
+      // generic, non-platform specific code
+    #endif
 
     static void print_uint8_array(
         Print &stream_out, uint8_t *array, size_t count);
