@@ -5,27 +5,27 @@
         git@s-light.eu, http://s-light.eu, https://github.com/s-light/
 *************************************************************************/
 /************************************************************************
-    The MIT License (MIT)
+The MIT License (MIT)
 
-    Copyright (c) 2015 Stefan Krüger
+Copyright (c) 2015 Stefan Krüger
 
-    Permission is hereby granted, free of charge, to any person obtaining a copy
-    of this software and associated documentation files (the "Software"), to deal
-    in the Software without restriction, including without limitation the rights
-    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-    copies of the Software, and to permit persons to whom the Software is
-    furnished to do so, subject to the following conditions:
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-    The above copyright notice and this permission notice shall be included in all
-    copies or substantial portions of the Software.
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
-    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-    SOFTWARE.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 *************************************************************************/
 
 // include guard
@@ -34,6 +34,35 @@
 
 // Includes Core Arduino functionality
 #include <Arduino.h>
+
+
+// experiments with std:function
+// https://stackoverflow.com/questions/14189440/c-callback-using-class-member#14189561
+// more on this topic at
+// https://github.com/arduino/ArduinoCore-avr/pull/58
+#if defined(ARDUINO_ARCH_SAMD)
+    // fix  "error: macro "min" passed 3 arguments, but takes just 2"
+    #undef min
+    #undef max
+    // fix
+    // undefined reference to `std::__throw_bad_function_call()'
+    // found at
+    // https://forum.arduino.cc/index.php?topic=382211.msg2790687#msg2790687
+    // namespace std {
+    //     void __throw_bad_function_call() {
+    //         Serial.println(F("STL ERROR - __throw_bad_function_call"));
+    //     }
+    // }
+    // but results in
+    // warning: 'noreturn' function does return [enabled by default
+    // and
+    // multiple definition of `std::__throw_bad_function_call()'
+    // if we move this to the main .ino file it works...
+    // → please include slight_ButtonInput_CallbackHelper.h from the main sketch.
+    #include <functional>
+#endif
+
+
 
 class slight_DebugMenu {
  public:
@@ -45,9 +74,18 @@ class slight_DebugMenu {
         uint8_t input_length_new
     );
 
-    // callback
-    typedef void (* callback_t) (slight_DebugMenu  *pInstance);
-
+    //call back function definition
+    #if defined(ARDUINO_ARCH_AVR)
+        // using tCallbackFunction =  void (*)(uint8_t);
+        using tCallbackFunction =
+            void (*)(slight_DebugMenu *instance);
+    #elif defined(ARDUINO_ARCH_SAMD)
+        // using tCallbackFunction = std::function<void(uint8_t)>;
+        using tCallbackFunction =
+            std::function<void(slight_DebugMenu *instance)>;
+    #else
+        #error “Not implemented yet. please create a pull-request :-)”
+    #endif
 
     void begin();
     void begin(bool print_on_start);
@@ -67,7 +105,7 @@ class slight_DebugMenu {
 
     Print& get_stream_out_ref();
 
-    void set_callback(callback_t callback_on_EOC_new);
+    void set_callback(tCallbackFunction callback_on_EOC_new);
 
 
 
@@ -162,7 +200,7 @@ class slight_DebugMenu {
         // bool flag_LongLine;
         // bool flag_SkipRest;
 
-        callback_t callback_on_EOC;
+        tCallbackFunction callback_on_EOC;
 
         void handle_input_available();
         void check_EOC();

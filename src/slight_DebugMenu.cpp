@@ -1,3 +1,4 @@
+// NOLINT(legal/copyright)
 /******************************************************************************
 
     slight_DebugMenu Library
@@ -33,6 +34,7 @@
 
 
 // Include yourselfs header file
+// NOLINTNEXTLINE(build/include)
 #include "./slight_DebugMenu.h"
 
 // Includes Core Arduino functionality
@@ -58,20 +60,23 @@
 // }
 
 slight_DebugMenu :: slight_DebugMenu(
+    // NOLINTNEXTLINE(runtime/references)
     Stream &stream_input_ref,
+    // NOLINTNEXTLINE(runtime/references)
     Print &stream_out_ref,
     uint8_t input_length_new
 ) :
     stream_input(stream_input_ref),
     stream_out(stream_out_ref)
+// NOLINTNEXTLINE(whitespace/braces)
 {
     ready = false;
     // in = in_ref;
     // stream_out = out_ref;
     input_length = input_length_new;
     user_EOC_char_active = false;
-    command_input = (char *)malloc(input_length);
-    command_current = (char *)malloc(input_length);
+    command_input = <char*>malloc(input_length);
+    command_current = <char*>malloc(input_length);
 }
 
 
@@ -115,7 +120,7 @@ void slight_DebugMenu::update() {
 }
 
 
-void slight_DebugMenu::set_callback(callback_t callback_on_EOC_new) {
+void slight_DebugMenu::set_callback(tCallbackFunction callback_on_EOC_new) {
     callback_on_EOC = callback_on_EOC_new;
 }
 
@@ -160,7 +165,7 @@ char* slight_DebugMenu::get_command_current_pointer() {
 
 void slight_DebugMenu::print_Binary_8(Print &stream_out, uint8_t value)  {
     // for (size_t mask = 0b10000000; mask; mask >>= 1) {
-    for (uint8_t mask = ((uint8_t)1 << 7    ); mask; mask >>= 1) {
+    for (uint8_t mask = ((uint8_t)1 << 7); mask; mask >>= 1) {
         // check if this bit is set
         if (mask & value) {
             stream_out.print('1');
@@ -216,80 +221,80 @@ void slight_DebugMenu::print_HEX(Print &stream_out, uint8_t value) {
 
 // uint8_t slight_DebugMenu::parse_HEX(char *input, uint8_t count){
 uint8_t slight_DebugMenu::parse_HEX(char *input) {
-	uint8_t count = 2;
-	uint8_t value = 0;
-	uint8_t temp = 0;
-	uint8_t index = 0;
+    uint8_t count = 2;
+    uint8_t value = 0;
+    uint8_t temp = 0;
+    uint8_t index = 0;
 
-	for (index = 0; index < count; index++)  {
-		if        ( (input[index] >= '0') && (input[index] <= '9') ) {
-			temp = input[index] - '0';
-		} else if ( (input[index] >= 'a') && (input[index] <= 'f') ) {
-			temp = (input[index] - 'a' + 10);
-		} else if ( (input[index] >= 'A') && (input[index] <= 'F') ) {
-			temp = (input[index] - 'A' + 10) ;
-		} else {
-			// no HEX value..
-			temp = 0;
-		}
-		value = value + ((16 - ((index%2) * 15)) * temp);
-	}
+    for (index = 0; index < count; index++)  {
+    if        ( (input[index] >= '0') && (input[index] <= '9') ) {
+    temp = input[index] - '0';
+    } else if ( (input[index] >= 'a') && (input[index] <= 'f') ) {
+    temp = (input[index] - 'a' + 10);
+    } else if ( (input[index] >= 'A') && (input[index] <= 'F') ) {
+    temp = (input[index] - 'A' + 10);
+    } else {
+    // no HEX value..
+    temp = 0;
+    }
+    value = value + ((16 - ((index%2) * 15)) * temp);
+    }
 
-	// // debug variant
-	// index = 0;
-	// Serial.print(F("input["));
-	// Serial.print(index);
-	// Serial.print(F("]: '"));
-	// Serial.print(input[index]);
-	// Serial.println(F("'"));
-	// if        ( (input[index] >= '0') && (input[index] <= '9') ) {
-	// 	temp = input[index] - '0';
-	// } else if ( (input[index] >= 'a') && (input[index] <= 'f') ) {
-	// 	temp = (input[index] - 'a' + 10);
-	// } else if ( (input[index] >= 'A') && (input[index] <= 'F') ) {
-	// 	temp = (input[index] - 'A' + 10) ;
-	// } else {
-	// 	// no HEX value..
-	// 	temp = 0;
-	// }
-	// Serial.print(F("temp: "));
-	// Serial.println(temp);
-	//
-	// value = value + ((16 - ((index%2) * 15)) * temp);
-	// //value = value + (16 * temp);
-	// Serial.print(F("16 - ((index%2) * 15): "));
-	// Serial.println(16 - ((index%2) * 15));
-	//
-	// Serial.print(F("value: "));
-	// Serial.println(value);
-	// index = 1;
-	// Serial.print(F("input["));
-	// Serial.print(index);
-	// Serial.print(F("]: '"));
-	// Serial.print(input[index]);
-	// Serial.println(F("'"));
-	// if        ( (input[index] >= '0') && (input[index] <= '9') ) {
-	// 	temp = input[index] - '0';
-	// } else if ( (input[index] >= 'a') && (input[index] <= 'f') ) {
-	// 	temp = (input[index] - 'a' + 10);
-	// } else if ( (input[index] >= 'A') && (input[index] <= 'F') ) {
-	// 	temp = (input[index] - 'A' + 10) ;
-	// } else {
-	// 	// no HEX value..
-	// 	temp = 0;
-	// }
-	// Serial.print(F("temp: "));
-	// Serial.println(temp);
-	//
-	// value = value + ((16 - ((index%2) * 15)) * temp);
-	//
-	// Serial.print(F("16 - ((index%2) * 15): "));
-	// Serial.println(16 - ((index%2) * 15));
-	//
-	// Serial.print(F("value: "));
-	// Serial.println(value);
+    // // debug variant
+    // index = 0;
+    // Serial.print(F("input["));
+    // Serial.print(index);
+    // Serial.print(F("]: '"));
+    // Serial.print(input[index]);
+    // Serial.println(F("'"));
+    // if ((input[index] >= '0') && (input[index] <= '9')) {
+    //     temp = input[index] - '0';
+    // } else if ( (input[index] >= 'a') && (input[index] <= 'f') ) {
+    //     temp = (input[index] - 'a' + 10);
+    // } else if ( (input[index] >= 'A') && (input[index] <= 'F') ) {
+    //     temp = (input[index] - 'A' + 10);
+    // } else {
+    //     // no HEX value..
+    //     temp = 0;
+    // }
+    // Serial.print(F("temp: "));
+    // Serial.println(temp);
+    //
+    // value = value + ((16 - ((index%2) * 15)) * temp);
+    // //value = value + (16 * temp);
+    // Serial.print(F("16 - ((index%2) * 15): "));
+    // Serial.println(16 - ((index%2) * 15));
+    //
+    // Serial.print(F("value: "));
+    // Serial.println(value);
+    // index = 1;
+    // Serial.print(F("input["));
+    // Serial.print(index);
+    // Serial.print(F("]: '"));
+    // Serial.print(input[index]);
+    // Serial.println(F("'"));
+    // if        ( (input[index] >= '0') && (input[index] <= '9') ) {
+    //        temp = input[index] - '0';
+    // } else if ( (input[index] >= 'a') && (input[index] <= 'f') ) {
+    //        temp = (input[index] - 'a' + 10);
+    // } else if ( (input[index] >= 'A') && (input[index] <= 'F') ) {
+    //        temp = (input[index] - 'A' + 10) ;
+    // } else {
+    //        // no HEX value..
+    //        temp = 0;
+    // }
+    // Serial.print(F("temp: "));
+    // Serial.println(temp);
+    //
+    // value = value + ((16 - ((index%2) * 15)) * temp);
+    //
+    // Serial.print(F("16 - ((index%2) * 15): "));
+    // Serial.println(16 - ((index%2) * 15));
+    //
+    // Serial.print(F("value: "));
+    // Serial.println(value);
 
-	return value;
+    return value;
 }
 
 
@@ -374,7 +379,7 @@ void slight_DebugMenu::print_uint16_align_right(
     uint8_t offset = padding_width-1;
     uint16_t compare = 10;
     while (
-        (value >= compare) and
+        (value >= compare) &&
         (offset > 0)
     ) {
         offset -= 1;
@@ -427,7 +432,7 @@ void slight_DebugMenu::print_uint32_align_right(
     uint8_t offset = padding_width-1;
     uint32_t compare = 10;
     while (
-        (value >= compare) and
+        (value >= compare) &&
         (offset > 0)
     ) {
         offset -= 1;
@@ -521,7 +526,7 @@ void slight_DebugMenu::print_int32_align_right(
     compare *= 10;
 
     while (
-        (compare <= value_abs) and
+        (compare <= value_abs) &&
         (offset > 0)
     ) {
         offset -= 1;
@@ -564,7 +569,7 @@ void slight_DebugMenu::print_int16_align_right(
     compare *= 10;
 
     while (
-        (compare <= value_abs) and
+        (compare <= value_abs) &&
         (offset > 0)
     ) {
         offset -= 1;
@@ -770,21 +775,21 @@ void slight_DebugMenu::print_int16_array(
 
 
 void slight_DebugMenu::print_MAC(Print &stream_out, uint8_t *array) {
-	size_t index = 0;
-	print_HEX(stream_out, array[index]);
-	for(index = 1; index < 6; index++){
-		stream_out.print(F(":"));
-		print_HEX(stream_out, array[index]);
-	}
+    size_t index = 0;
+    print_HEX(stream_out, array[index]);
+    for (index = 1; index < 6; index++) {
+        stream_out.print(F(":"));
+        print_HEX(stream_out, array[index]);
+    }
 }
 
 void slight_DebugMenu::print_IP(Print &stream_out, uint8_t *array) {
-	size_t index = 0;
-	print_uint8_align_right(stream_out, array[index]);
-	for(index = 1; index < 4; index++){
-		stream_out.print(F("."));
-		print_uint8_align_right(stream_out, array[index]);
-	}
+    size_t index = 0;
+    print_uint8_align_right(stream_out, array[index]);
+    for (index = 1; index < 4; index++) {
+        stream_out.print(F("."));
+        print_uint8_align_right(stream_out, array[index]);
+    }
 }
 
 
@@ -798,7 +803,7 @@ void slight_DebugMenu::handle_input_available() {
     // collect next input text
     while ((!flag_EOC) && (stream_input.available())) {
         // get the new byte:
-        char charNew = (char)stream_input.read();
+        char charNew = <char>stream_input.read();
         // stream_out.print(F("charNew '"));
         // stream_out.print(charNew);
         // stream_out.print(F("' : "));
@@ -956,15 +961,12 @@ void slight_DebugMenu::check_EOC() {
         //     flag_BF = false;
         // }
 
-
-
         // Serial.print  (F("    command_input: '"));
         // Serial.print(command_input);
         // Serial.println(F("'"));
         // Serial.print  (F("    command_current: '"));
         // Serial.print(command_current);
         // Serial.println(F("'"));
-
 
         // // Serial.println(F("  check flag_SkipRest"));
         // if ( !flag_SkipRest) {
@@ -986,8 +988,7 @@ void slight_DebugMenu::check_EOC() {
         //     // Serial.println(F("   skip rest of Line"));
         //     flag_SkipRest = false;
         // }
-
-    }// if Flag complete
+    }  // if Flag complete
 }
 
 
