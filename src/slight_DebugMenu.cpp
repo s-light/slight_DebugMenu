@@ -75,10 +75,9 @@ slight_DebugMenu :: slight_DebugMenu(
     // stream_out = out_ref;
     input_length = input_length_new;
     user_EOC_char_active = false;
-    command_input = <char*>malloc(input_length);
-    command_current = <char*>malloc(input_length);
+    command_input = reinterpret_cast<char*>(malloc(input_length));
+    command_current = reinterpret_cast<char*>(malloc(input_length));
 }
-
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // functions
@@ -803,7 +802,7 @@ void slight_DebugMenu::handle_input_available() {
     // collect next input text
     while ((!flag_EOC) && (stream_input.available())) {
         // get the new byte:
-        char charNew = <char>stream_input.read();
+        char charNew = static_cast<char>(stream_input.read());
         // stream_out.print(F("charNew '"));
         // stream_out.print(charNew);
         // stream_out.print(F("' : "));
