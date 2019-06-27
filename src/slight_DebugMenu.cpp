@@ -4,7 +4,7 @@
         helper library to build a simple debug menu for the stream_out terminal.
 
     written by stefan krueger (s-light),
-        github@s-light.eu, http://s-light.eu, https://github.com/s-light/
+        git@s-light.eu, http://s-light.eu, https://github.com/s-light/
 
 ******************************************************************************/
 /******************************************************************************

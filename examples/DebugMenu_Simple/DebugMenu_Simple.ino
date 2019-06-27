@@ -13,7 +13,7 @@
         ~
 
     written by stefan krueger (s-light),
-        github@s-light.eu, http://s-light.eu, https://github.com/s-light/
+        git@s-light.eu, http://s-light.eu, https://github.com/s-light/
 
     changelog / history
         other information in the git commit messages
