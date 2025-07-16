@@ -758,6 +758,34 @@ void slight_DebugMenu::print_uint16_array(
     }
 }
 
+// void slight_DebugMenu::print_uint16_array_2D(
+//     Print &stream_out,
+//     uint16_t *array,
+//     size_t count_col,
+//     size_t count_row
+// ) {
+//     // this does not work as we would need to calculate our pointer things ourselfs..
+//     stream_out.print(F("NOT IMPLEMENTED YET."));
+//
+//     // size_t col_i = 0;
+//     // size_t row_i = 0;
+//     // // print_uint16_align_right(stream_out, row_i);
+//     // // stream_out.print(F(" --> "));
+//     // // print_uint16_align_right(stream_out, array[col_i][row_i]);
+//     // for (row_i = 0; row_i < count_row; row_i++) {
+//     //     // print row numer
+//     //     print_uint16_align_right(stream_out, row_i);
+//     //     stream_out.print(F(" --> "));
+//     //     col_i = 0;
+//     //     print_uint16_align_right(stream_out, array[col_i][row_i]);
+//     //     for (col_i = 1; col_i < count_col; col_i++) {
+//     //         stream_out.print(F(", "));
+//     //         print_uint16_align_right(stream_out, array[col_i][row_i]);
+//     //     }
+//     //     stream_out.println();
+//     // }
+// }
+
 void slight_DebugMenu::print_int16_array(
     Print &stream_out,
     int16_t *array,
@@ -999,7 +1027,7 @@ DummyWriter::DummyWriter() {
     // nothing to do.
 }
 
-size_t DummyWriter::write(uint8_t data) {
+size_t DummyWriter::write(__attribute__((unused)) uint8_t data) {
     // data is send to nirvana :-)
     return 1;
 }

@@ -74,7 +74,7 @@ class slight_DebugMenu {
         uint8_t input_length_new
     );
 
-    //call back function definition
+    // call back function definition
     #if defined(ARDUINO_ARCH_AVR)
         // using tCallbackFunction =  void (*)(uint8_t);
         using tCallbackFunction =
@@ -84,68 +84,54 @@ class slight_DebugMenu {
         using tCallbackFunction =
             std::function<void(slight_DebugMenu *instance)>;
     #else
-        #error “Not implemented yet. please create a pull-request :-)”
+        #include <functional>
+        using tCallbackFunction = std::function<void(slight_DebugMenu *instance)>;
+        // #error “Not implemented yet. please create a pull-request :-)”
     #endif
 
-    void begin();
-    void begin(bool print_on_start);
+        void begin();
+        void begin(bool print_on_start);
 
-    void update();
+        void update();
 
-    // bool get_flag_SkipRest();
-    bool get_flag_BF();
-    void set_flag_EOC(bool flag);
+        // bool get_flag_SkipRest();
+        bool get_flag_BF();
+        void set_flag_EOC(bool flag);
 
-    void set_user_EOC_char(char user_EOC_char_new);
-    char get_user_EOC_char();
-    void clear_user_EOC_char();
+        void set_user_EOC_char(char user_EOC_char_new);
+        char get_user_EOC_char();
+        void clear_user_EOC_char();
 
-    char* get_command_input_pointer();
-    char* get_command_current_pointer();
+        char *get_command_input_pointer();
+        char *get_command_current_pointer();
 
-    Print& get_stream_out_ref();
+        Print &get_stream_out_ref();
 
-    void set_callback(tCallbackFunction callback_on_EOC_new);
+        void set_callback(tCallbackFunction callback_on_EOC_new);
 
+        static void print_Binary_8(Print &stream_out, uint8_t value);
+        static void print_Binary_12(Print &stream_out, uint16_t value);
+        static void print_Binary_16(Print &stream_out, uint16_t value);
+        static void print_Binary_32(Print &stream_out, uint32_t value);
 
+        static void print_HEX(Print &stream_out, uint8_t value);
 
+        static uint8_t parse_HEX(char *input);
 
-    static void print_Binary_8(
-        Print &stream_out, uint8_t value);
-    static void print_Binary_12(
-        Print &stream_out, uint16_t value);
-    static void print_Binary_16(
-        Print &stream_out, uint16_t value);
-    static void print_Binary_32(
-        Print &stream_out, uint32_t value);
+        static uint8_t count_digits(uint32_t value);
 
-    static void print_HEX(
-        Print &stream_out, uint8_t value);
+        // TODO: find smooth way to extract align right thing..
+        // static void print_align_right(
+        //     Print &stream_out, uint8_t value, uint8_t padding_width);
+        // --> use templates!!!!
 
-    static uint8_t parse_HEX(char *input);
+        static void print_uint8_align_right(Print &stream_out, uint8_t value);
+        static void print_uint16_align_right(Print &stream_out, uint16_t value);
+        static void print_uint32_align_right(Print &stream_out, uint32_t value);
 
-
-    static uint8_t count_digits(
-        uint32_t value);
-
-    // TODO: find smooth way to extract align right thing..
-    // static void print_align_right(
-    //     Print &stream_out, uint8_t value, uint8_t padding_width);
-    // --> use templates!!!!
-
-    static void print_uint8_align_right(
-        Print &stream_out, uint8_t value);
-    static void print_uint16_align_right(
-        Print &stream_out, uint16_t value);
-    static void print_uint32_align_right(
-        Print &stream_out, uint32_t value);
-
-    static void print_int8_align_right(
-        Print &stream_out, int16_t value);
-    static void print_int16_align_right(
-        Print &stream_out, int16_t value);
-    static void print_int32_align_right(
-        Print &stream_out, int32_t value);
+        static void print_int8_align_right(Print &stream_out, int16_t value);
+        static void print_int16_align_right(Print &stream_out, int16_t value);
+        static void print_int32_align_right(Print &stream_out, int32_t value);
 
     #if defined(ARDUINO_ARCH_AVR)
         // AVR-specific code
@@ -153,7 +139,7 @@ class slight_DebugMenu {
           Print &stream_out, double value,
           int8_t total_width, uint8_t precission, int8_t clip = 0);
     #elif defined(ARDUINO_ARCH_SAM)
-      // SAM-specific code
+        // SAM-specific code
     #else
       // generic, non-platform specific code
     #endif
@@ -170,6 +156,13 @@ class slight_DebugMenu {
         Print &stream_out, uint16_t *array, size_t count);
     static void print_int16_array(
         Print &stream_out, int16_t *array, size_t count);
+
+    // static void print_uint16_array_2D(
+    //     Print &stream_out,
+    //     uint16_t *array,
+    //     size_t count_col,
+    //     size_t count_row
+    // );
 
 
     static void print_MAC(
