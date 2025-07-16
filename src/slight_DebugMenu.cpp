@@ -38,11 +38,7 @@
 #include "./slight_DebugMenu.h"
 
 // Includes Core Arduino functionality
-#if ARDUINO < 100
-    #include <WProgram.h>
-#else
-    #include <Arduino.h>
-#endif
+#include <Arduino.h>
 
 
 // slight_DebugMenu :: slight_DebugMenu(

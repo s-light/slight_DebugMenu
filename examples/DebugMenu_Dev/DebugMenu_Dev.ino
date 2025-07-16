@@ -1,4 +1,5 @@
 /******************************************************************************
+
     DebugMenu_Simple
         short description
         debugout on usbserial interface: 115200baud
@@ -8,12 +9,52 @@
             Arduino compatible (with serial port)
             LED on pin 9
 
+    libraries used:
+        ~
+
     written by stefan krueger (s-light),
         git@s-light.eu, http://s-light.eu, https://github.com/s-light/
 
-    license: CC0 1.0 (Public Domain)
-    https://creativecommons.org/publicdomain/zero/1.0/
+    changelog / history
+        other information in the git commit messages
+        12.11.2015 21:00 created (based on __Template_SLIGHT)
+
+    TO DO:
+        ~ xx
+
+
 ******************************************************************************/
+/******************************************************************************
+    The MIT License (MIT)
+
+    Copyright (c) 2015 Stefan Krüger
+
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to
+deal in the Software without restriction, including without limitation the
+rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+******************************************************************************/
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Includes
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// use "file.h" for files in same directory as .ino
+// #include "file.h"
+// use <file.h> for files in library directory
+// #include <file.h>
 
 #include <slight_DebugMenu.h>
 
@@ -53,9 +94,12 @@ void sketchinfo_print(Print &out) {
     // out.println(__TIME__); 20:35:04
 }
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// definitions (global)
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-// slight_DebugMenu(Stream &in_ref, Print &out_ref, uint8_t input_length_new);
-slight_DebugMenu myDebugMenu(Serial, Serial, 15);
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Debug Output
 
 boolean infoled_state = 0;
 const byte infoled_pin = 9; // D9
@@ -67,8 +111,26 @@ boolean liveSign_Serial_Enabled = 0;
 boolean liveSign_LED_Enabled = 1;
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Menu
+
+// slight_DebugMenu(Stream &in_ref, Print &out_ref, uint8_t input_length_new);
+slight_DebugMenu myDebugMenu(Serial, Serial, 15);
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// other things..
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// functions
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// debug things
+
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Menu System
 
+// Main Menu
 void handleMenu_Main(slight_DebugMenu *pInstance) {
     Print &out = pInstance->get_stream_out_ref();
     char *command = pInstance->get_command_current_pointer();
@@ -89,6 +151,7 @@ void handleMenu_Main(slight_DebugMenu *pInstance) {
         out.println(F("\t 'i': sketch info"));
         out.println(F("\t 'y': toggle DebugOut livesign print"));
         out.println(F("\t 'Y': toggle DebugOut livesign LED"));
+        out.println(F("\t 'x': tests"));
         out.println();
         out.println(F("\t 'A': Show 'HelloWorld' "));
         out.println(F("\t 'f': DemoFadeTo(ID, value) 'f1:65535'"));
@@ -111,6 +174,137 @@ void handleMenu_Main(slight_DebugMenu *pInstance) {
         liveSign_LED_Enabled = !liveSign_LED_Enabled;
         out.print(F("\t liveSign_LED_Enabled:"));
         out.println(liveSign_LED_Enabled);
+    } break;
+    case 'x': {
+        // get state
+        out.println(F("__________"));
+        out.println(F("Tests:"));
+
+        out.println(F("nothing to do."));
+
+        // uint16_t wTest = 65535;
+        uint16_t wTest = atoi(&command[1]);
+        out.print(F("wTest: "));
+        out.print(wTest);
+        out.println();
+
+        out.print(F("1: "));
+        out.print((byte)wTest);
+        out.println();
+
+        out.print(F("2: "));
+        out.print((byte)(wTest >> 8));
+        out.println();
+
+        char buffer[] = "--------.---\0";
+        snprintf(
+            buffer, sizeof(buffer),
+            "%*.*f",
+            10,
+            2,
+            12345.789);
+        out.print(F("sprintf: "));
+        out.print(buffer);
+        out.println();
+        
+        memset(buffer, '\0', sizeof(buffer));
+        dtostrf(12345.789, 0, 2, buffer);
+        out.print(F("dtostrf: '"));
+        out.print(buffer);
+        out.print(F("'"));
+        out.println();
+        
+        memset(buffer, '\0', sizeof(buffer));
+        dtostrf(12345.789, 1, 3, buffer);
+        out.print(F("dtostrf: '"));
+        out.print(buffer);
+        out.print(F("'"));
+        out.println();
+        
+        memset(buffer, '\0', sizeof(buffer));
+        dtostrf(12.789, 8, 2, buffer);
+        out.print(F("dtostrf: '"));
+        out.print(buffer);
+        out.print(F("'"));
+        out.println();
+        
+        memset(buffer, '\0', sizeof(buffer));
+        dtostrf(12.789, -8, 2, buffer);
+        out.print(F("dtostrf: '"));
+        out.print(buffer);
+        out.print(F("'"));
+        out.println();
+        
+        char buffer2[] = "--.--\0";
+        memset(buffer2, '\0', sizeof(buffer2));
+        dtostrf(123.78, 5, 2, buffer2);
+        out.print(F("dtostrf: '"));
+        out.print(buffer2);
+        out.print(F("'"));
+        out.println();
+
+        out.print(F("FLT_MAX: '"));
+        out.print(FLT_MAX);
+        out.print(F("'"));
+        out.println();
+        
+        out.print(F("std::numeric_limits<float>::max();: '"));
+        out.print(std::numeric_limits<float>::max());
+        out.print(F("'"));
+        out.println();
+
+        out.print(F("3.4028235E+38: '"));
+        out.print(3.4028235E+38);
+        out.print(F("'"));
+        out.println();
+        out.print(F("3.4028235E+37: '"));
+        out.print(3.4028235E+37);
+        out.print(F("'"));
+        out.println();
+        out.print(F("3.4028235E+30: '"));
+        out.print(3.4028235E+30);
+        out.print(F("'"));
+        out.println();
+        out.print(F("(int32_t)3.4028235E+38: '"));
+        out.print((int32_t)3.4028235E+38);
+        out.print(F("'"));
+        out.println();
+
+#if defined(ARDUINO_ARCH_AVR)
+        out.print(F("print_float_align_right: '"));
+        slight_DebugMenu::print_float_align_right(out, 123.78, 6, 2);
+        out.print(F("'"));
+        out.println();
+
+        out.print(F("print_float_align_right: '"));
+        slight_DebugMenu::print_float_align_right(out, 123.78, 8, 2);
+        out.print(F("'"));
+        out.println();
+
+        out.print(F("print_float_align_right: '"));
+        slight_DebugMenu::print_float_align_right(out, 123.78, -8, 2);
+        out.print(F("'"));
+        out.println();
+
+        out.print(F("print_float_align_right: '"));
+        slight_DebugMenu::print_float_align_right(out, 12.78, 3, 2);
+        out.print(F("'"));
+        out.println();
+
+        out.print(F("print_float_align_right: '"));
+        slight_DebugMenu::print_float_align_right(out, 12.78, 3, 2, 1);
+        out.print(F("'"));
+        out.println();
+
+        out.print(F("print_float_align_right: '"));
+        slight_DebugMenu::print_float_align_right(out, 12.78, 3, 2, -1);
+        out.print(F("'"));
+        out.println();
+#endif
+
+        out.println();
+
+        out.println(F("__________"));
     } break;
     //---------------------------------------------------------------------
     case 'A': {
@@ -167,8 +361,9 @@ void handleMenu_Main(slight_DebugMenu *pInstance) {
         }
         pInstance->get_command_input_pointer()[0] = '?';
         pInstance->set_flag_EOC(true);
-    } // end default
+    }
     } // end switch
+
     // end Command Parser
 }
 
@@ -179,27 +374,44 @@ void handleMenu_Main(slight_DebugMenu *pInstance) {
 // setup
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void setup() {
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // initialise PINs
+
+    // LiveSign
     pinMode(infoled_pin, OUTPUT);
     digitalWrite(infoled_pin, HIGH);
 
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // initialise serial
     Serial.begin(115200);
     // Wait for Serial Connection to be opened from Host or
     // timeout after 6second
     uint32_t timeStamp_Start = millis();
-    while ((!Serial) && !((millis() - timeStamp_Start) > 6000)) {
+    while ((!Serial) && ((millis() - timeStamp_Start) < 6000)) {
         yield();
     }
     Serial.println();
 
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // print welcome
     sketchinfo_print(Serial);
 
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // setup XXX1
+    // Serial.println(F("setup XXX1:")); {
+    //
+    //     Serial.println(F("\t sub action"));
+    // }
+    // Serial.println(F("\t finished."));
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // serial menu
     myDebugMenu.set_user_EOC_char(';');
     myDebugMenu.set_callback(handleMenu_Main);
     myDebugMenu.begin();
 
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Serial.println(F("Loop:"));
 } /** setup **/
 
@@ -207,10 +419,24 @@ void setup() {
 // main loop
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void loop() {
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // menu input
     myDebugMenu.update();
 
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // timed things
+
+    // every XXXXms
+    // if ( ( millis() - ulTimeStamp_LastAction ) > cwUpdateInterval) {
+    //     ulTimeStamp_LastAction =  millis();
+    //     // do something
+    // }
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // debug output
-    if ((millis() - liveSign_TimeStamp_LastAction) > liveSign_UpdateInterval) {
+
+    if ((millis() - liveSign_TimeStamp_LastAction) >
+        liveSign_UpdateInterval) {
         liveSign_TimeStamp_LastAction = millis();
 
         if (liveSign_Serial_Enabled) {
@@ -229,6 +455,10 @@ void loop() {
             }
         }
     }
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // other things
+
 } /** loop **/
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
