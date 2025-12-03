@@ -143,6 +143,7 @@ public:
         // generic, non-platform specific code
 #endif
 
+    static void print_bool_array(Print &stream_out, bool *array, size_t count);
     static void print_uint8_array(Print &stream_out, uint8_t *array,
                                   size_t count);
     static void print_int8_array(Print &stream_out, int8_t *array,

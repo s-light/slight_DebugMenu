@@ -684,6 +684,20 @@ void slight_DebugMenu::print_int8_align_right(
 
 
 
+void slight_DebugMenu::print_bool_array(
+    Print &stream_out,
+    bool *array,
+    size_t count
+) {
+    stream_out.print(F(" "));
+    size_t index = 0;
+    stream_out.print(array[index]);
+    for (index = 1; index < count; index++) {
+        stream_out.print(F(", "));
+        stream_out.print(array[index]);
+    }
+}
+
 void slight_DebugMenu::print_int8_array(
     Print &stream_out,
     int8_t *array,
